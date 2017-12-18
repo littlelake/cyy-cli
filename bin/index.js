@@ -44,8 +44,9 @@ checkVersion(function () {
 
 	// 选择项目的类型，是'web'还是'app'
 	inquirer.prompt(installConfig.type).then(function (args) {
-		assignConfig(args, true);
-		// nameInit();
+		// 将appName保存在全局变量configTemp中
+		assignConfig(args);
+		nameInit();
 	})
 });
 
@@ -62,12 +63,12 @@ function assignConfig(args, flag) {
 }
 
 /**
- * @description 专题名称
+ * @description 选择web/app的名字
  */
 function nameInit() {
 	// 选择相应的专题名称
 	inquirer.prompt(installConfig.nameInit).then(function (args) {
-		assignConfig(args);
+		assignConfig(args, true);
 	})
 }
 
@@ -102,16 +103,15 @@ function createFn() {
  * @param {string} path - 路径 
  */
 function createTemplate(type, path) {
-	fs.readFile(templatePath + path + '/index.html', function (err, buffer) {
+	fs.readFile(templatePath + path + '/src/index.html', function (err, buffer) {
 		if (err) throw err;
-
 		var spinner = ora('   正在生产... ').start();
-		fsp.copy(templatePath + path + '/', nowPath + '\\' + configTemp.appType + '/')
-			.then(function() {
-				fsp.ensureDir(nowPath + '\\' + configTemp.appType + '');
-			}).then(function() {
-				fsp.writeFile(nowPath + '\\' + configTemp.appType + '/index.html', 'gb2312');
-			}).then(function() {
+		fsp.copy(templatePath + path + '/', nowPath + '\\' + configTemp.appName + '/')
+			.then(function () {
+				fsp.ensureDir(nowPath + '\\' + configTemp.appName + '');
+			}).then(function () {
+				fsp.writeFile(nowPath + '\\' + configTemp.appName + '/src/index.html', 'gb2312');
+			}).then(function () {
 				spinner.stop();
 				console.log('');
 				ora(chalk.green('目录生成成功')).succeed();
